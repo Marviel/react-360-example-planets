@@ -1,4 +1,4 @@
-# React 360 Example -- Planets
+# React 360 Example -- Planets 🌍
 
 [React 360](https://github.com/facebook/react-360) demonstration that shows off the rotation inheritance properties of nested children.
 
