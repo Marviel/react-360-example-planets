@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "NODE_ENV=production node -e \"console.log('open browser at http://localhost:8081/index.html\\n\\n');\" && node node_modules/react-native/local-cli/cli.js start",
-    "build": "node node_modules/react-360/scripts/bundle.js && cp static_assets/ build/",
     "bundle": "node node_modules/react-360/scripts/bundle.js && cp -r static_assets/ build/static_assets/",
+    "build": "node node_modules/react-360/scripts/bundle.js && cp -r static_assets/ build/static_assets/",
     "open": "node -e \"require('xopen')('http://localhost:8081/index.html')\"",
     "devtools": "react-devtools",
     "test": "jest"
