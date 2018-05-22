@@ -12,6 +12,10 @@ import {
     PointLight,
     VrButton,
 } from 'react-360';
+import {
+    RotationHolder
+} from './RotationHolder.js';
+
 
 import _ from "underscore";
 
@@ -62,7 +66,6 @@ function randomHex(toHash) {
 }
 
 function generateInitialSpheres1({radius, color, translate, rotation, depth}) {
-    console.log("generateInitialSpheres1", depth)
     return depth > 0 ? [{
                             key: uuidv4(),
                             radius,
@@ -130,27 +133,29 @@ export default class planetaryR360 extends React.Component {
                         depth: 10})
         }
 
-
-        console.log(this.state.spheres)
         window.setInterval(()=>{this.changeRotations()}, 10);
     }
 
   changeRotations = () =>{
-    const spheres = [this.calculateChangeTree(this.state.spheres[0])];
+    const spheres = [this.calculateChangeTree(this.state.spheres[0], 10)];
     this.setState({
         spheres
 	})
   }
 
-  calculateChangeTree = (sphere)=>{
+  calculateChangeTree = (sphere, depth)=>{
     return { 
                 ...sphere,
                 rotation: [sphere.rotation[0] + this.state.xRotDelta, 
                            sphere.rotation[1] + this.state.yRotDelta, 
                            sphere.rotation[2] + this.state.zRotDelta],
-                spheres: sphere.spheres.map((v) => this.calculateChangeTree(v))
+                spheres: sphere.spheres.map((v) => this.calculateChangeTree(v, depth - 1))
            }
   }
+
+    sphereOnClick = (k)=>{
+        //generateInitialSpheres1({radius, color, translate, rotation, depth})
+    }
 
   changeMoons = () =>{
 	var increasingSpheres = this.state.increasingSpheres;
@@ -201,57 +206,36 @@ export default class planetaryR360 extends React.Component {
                          color={baseSphere.color}
                          translate={baseSphere.translate}
                          rotation={baseSphere.rotation}
-                         spheres={baseSphere.spheres}/>
-        <Text
-          style={{
-                          backgroundColor: '#777899',
-                              fontSize: 0.2,
-                              layoutOrigin: [0.5, 0.5],
-                              paddingLeft: 0.2,
-                              paddingRight: 0.2,
-                              textAlign: 'center',
-                              textAlignVertical: 'center',
-                              transform: [{translate: [-2, 0, -3]},
-                                          {rotateY: 50}],
-                            }}
-          onInput={()=>{this.rotationDeltaOnChange(0,1)}}
-         >
-            X Up
-         </Text>
-         <Text
-            style={{
-                          backgroundColor: '#7778BB',
-                              fontSize: 0.2,
-                              layoutOrigin: [0.5, 0.5],
-                              paddingLeft: 0.2,
-                              paddingRight: 0.2,
-                              textAlign: 'center',
-                              textAlignVertical: 'center',
-                              transform: [{translate: [-3, 0, -3]},
-                                          {rotateY: 50}],
-                            }}
-  
-            onInput={()=>{this.rotationDeltaOnChange(1,1)}}
-          >
-            Y Up
-          </Text>
-        <Text
-          style={{
-                          backgroundColor: '#7778FF',
-                              fontSize: 0.2,
-                              layoutOrigin: [0.5, 0.5],
-                              paddingLeft: 0.2,
-                              paddingRight: 0.2,
-                              textAlign: 'center',
-                              textAlignVertical: 'center',
-                              transform: [{translate: [-4, 0, -3]},
-                                          {rotateY: 50}],
-                            }}
-          onInput={()=>{this.rotationDeltaOnChange(2,1)}}
-         >
-            Z Up
-         </Text>
-
+                         spheres={baseSphere.spheres}
+                         onClick={this.sphereOnClick}/>
+        
+        
+        {/*--------- LEFT MENU ----------- */}
+        <RotationHolder rotationOnChange={r=>{this.rotationDeltaOnChange(0,r)}}
+                        rotation={this.state.xRotDelta}
+                        rotationName="X"
+                        rotationUpSuffix="Up"
+                        rotationDownSuffix="Down"
+                        transform={[{translate: [-4, 0, -1]},
+                                          {rotateY: 50}]}
+                        />
+      
+        <RotationHolder rotationOnChange={r=>{this.rotationDeltaOnChange(1,r)}}
+                        rotation={this.state.yRotDelta}
+                        rotationName="Y"
+                        rotationUpSuffix="Up"
+                        rotationDownSuffix="Down"
+                         transform={[{translate: [-3, 0, -1.5]},
+                                          {rotateY: 50}]}
+                         />
+        
+        <RotationHolder rotationOnChange={r=>{this.rotationDeltaOnChange(2,r)}}
+                        rotation={this.state.zRotDelta}
+                        rotationName="Z"
+                        rotationUpSuffix="Up"
+                        rotationDownSuffix="Down"
+                        transform={[{translate: [-2, 0, -2]},
+                                          {rotateY: 50}]}/>
       </View>
 	  </Scene>
     );
